@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
+import phonebookActions from '../../redux/phonebook/phonebook-actions';
 import styles from './Phonebook.module.css';
 
 function Phonebook({ onSubmit }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const { contacts } = useSelector(state => state.phonebook);
 
   const nameInputId = nanoid();
   const numberInputId = nanoid();
@@ -25,6 +28,17 @@ function Phonebook({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    const normalazeName = name.toLowerCase();
+
+    const hasName = contacts.find(contact =>
+      contact.name.toLowerCase().includes(normalazeName)
+    );
+
+    if (hasName) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
 
     onSubmit(name, number);
 
@@ -71,4 +85,9 @@ Phonebook.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default Phonebook;
+const mapDispatchToProps = dispatch => ({
+  onSubmit: (name, number) =>
+    dispatch(phonebookActions.addContact(name, number)),
+});
+
+export default connect(null, mapDispatchToProps)(Phonebook);

@@ -11,11 +11,7 @@ const ContactsItem = ({ id, name, number, onDeleteContact }) => {
           {name}: <span className={styles.number}>{number}</span>
         </p>
       </div>
-      <button
-        className={styles.button}
-        type="Submit"
-        onClick={() => onDeleteContact(id)}
-      >
+      <button className={styles.button} type="Submit" onClick={onDeleteContact}>
         Delete
       </button>
     </li>
