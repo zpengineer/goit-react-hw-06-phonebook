@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import phonebookActions from '../../redux/phonebook/phonebook-actions';
 import styles from './Phonebook.module.css';
 
-function Phonebook({ onSubmit }) {
+function Phonebook() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const { contacts } = useSelector(state => state.phonebook);
+  const dispatch = useDispatch();
 
   const nameInputId = nanoid();
   const numberInputId = nanoid();
+
+  const addContact = (name, number) =>
+    dispatch(phonebookActions.addContact(name, number));
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -40,7 +44,7 @@ function Phonebook({ onSubmit }) {
       return;
     }
 
-    onSubmit(name, number);
+    addContact(name, number);
 
     setName('');
     setNumber('');
@@ -82,12 +86,7 @@ function Phonebook({ onSubmit }) {
 }
 
 Phonebook.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  addContact: PropTypes.func,
 };
 
-const mapDispatchToProps = dispatch => ({
-  onSubmit: (name, number) =>
-    dispatch(phonebookActions.addContact(name, number)),
-});
-
-export default connect(null, mapDispatchToProps)(Phonebook);
+export default Phonebook;
